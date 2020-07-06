@@ -1,4 +1,27 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  width: 800px;
+  margin: 0 auto;
+}
+
 h1 {
   color: #27aedb;
   text-align: center;
+  width: 100%;
 }
+
+
+.calculator {
+  background-color: #fafafa;
+  border: 1px solid #e6e6e6;
+  border-radius: 10px;
+  overflow: hidden;
+
+  &__tabs {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+  }
+}
+
