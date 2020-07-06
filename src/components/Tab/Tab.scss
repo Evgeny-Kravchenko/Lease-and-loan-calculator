@@ -1,0 +1,42 @@
+.tab {
+  width: 399px;
+  height: 40px;
+  cursor: pointer;
+  background-color: #ffffff;
+  border: 0;
+  outline: 0;
+  border-bottom: 1px solid #e6e6e6;
+  transition: 0.2s;
+
+  &:hover {
+    background-color: #27aedb;
+  }
+
+  &_active {
+    background-color: #fafafa;
+
+    &:hover {
+      background-color: #fafafa;
+    }
+  }
+
+  &__lease {
+    border-right: 1px solid #e6e6e6;
+    border-bottom-right-radius: 10px;
+  }
+
+  &__loan {
+    border-left: 1px solid #e6e6e6;
+    border-bottom-left-radius: 10px;
+  }
+
+  &_active-lease {
+    border-color: #fafafa;
+    border-bottom-right-radius: 0;
+  }
+
+  &_active-loan {
+    border-color: #fafafa;
+    border-bottom-left-radius: 0;
+  }
+}
