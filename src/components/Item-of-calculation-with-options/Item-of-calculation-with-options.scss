@@ -1,0 +1,44 @@
+.wrapper-buttons {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  margin: 10px 0;
+  border: 1px solid #e6e6e6;
+
+  &__item {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    flex-grow: 1;
+    box-sizing: border-box;
+    padding: 10px;
+    background-color: #ffffff;
+    border: 0;
+    cursor: pointer;
+    transition: 0.2s;
+
+    .name {
+      width: 100%;
+    }
+
+    &:not(:first-child) {
+      border-left: 1px solid #e6e6e6;
+    }
+
+    &:hover {
+      background-color: gray;
+      color: #ffffff;
+    }
+
+    &_active {
+      background-color: #1568bc;
+      color: #ffffff;
+
+      &:hover {
+        background-color: #1568bc;
+        color: #ffffff;
+      }
+    }
+  }
+}
