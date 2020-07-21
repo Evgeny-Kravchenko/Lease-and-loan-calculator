@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import './Item-of-calculation-with-options.scss';
 
@@ -15,8 +16,9 @@ export default function ItemOfCalculationWithOptions(props) {
           }
           return (
             <button
+              type="button"
               className={classes.join(' ')}
-              key={index}
+              key={item.value}
               onClick={() => {
                 onUpdateProperty(propertyName, index);
               }}
@@ -30,3 +32,10 @@ export default function ItemOfCalculationWithOptions(props) {
     </>
   );
 }
+
+ItemOfCalculationWithOptions.propTypes = {
+  name: PropTypes.string.isRequired,
+  items: PropTypes.arrayOf(PropTypes.object).isRequired,
+  propertyName: PropTypes.string.isRequired,
+  onUpdateProperty: PropTypes.func.isRequired,
+};

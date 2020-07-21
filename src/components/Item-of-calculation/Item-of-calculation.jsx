@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import Input from '../Input/Input.jsx';
 
@@ -20,3 +21,11 @@ export default function ItemOfCalculation(props) {
     </div>
   );
 }
+
+ItemOfCalculation.propTypes = {
+  type: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
+  propertyName: PropTypes.string.isRequired,
+  onUpdateProperty: PropTypes.func.isRequired,
+  msrp: PropTypes.number.isRequired,
+};

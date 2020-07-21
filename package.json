@@ -1,0 +1,51 @@
+{
+  "name": "lease-and-loan-calculator",
+  "version": "1.0.0",
+  "description": "This is the lease and loan calculator app",
+  "main": "index.js",
+  "dependencies": {
+    "prop-types": "^15.7.2",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "react-hot-loader": "^4.12.21"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.10.4",
+    "@babel/preset-env": "^7.10.4",
+    "@babel/preset-react": "^7.10.4",
+    "babel-eslint": "^10.1.0",
+    "babel-loader": "^8.1.0",
+    "css-loader": "^3.6.0",
+    "eslint": "^7.2.0",
+    "eslint-config-airbnb": "^18.2.0",
+    "eslint-plugin-import": "^2.21.2",
+    "eslint-plugin-json": "^2.1.1",
+    "eslint-plugin-jsx-a11y": "^6.3.0",
+    "eslint-plugin-react": "^7.20.0",
+    "eslint-plugin-react-hooks": "^4.0.0",
+    "html-webpack-plugin": "^4.3.0",
+    "node-sass": "^4.14.1",
+    "sass-loader": "^9.0.1",
+    "style-loader": "^1.2.1",
+    "webpack": "^4.43.0",
+    "webpack-cli": "^3.3.12",
+    "webpack-dev-server": "^3.11.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build-dev": "webpack --mode development",
+    "build-prod": "webpack --mode production",
+    "start": "webpack-dev-server --mode development --open --hot",
+    "lint": "eslint --ext .js,.json ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Evgeny-Kravchenko/Lease-and-loan-calculator.git"
+  },
+  "author": "Evgeny-Kravchenko",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Evgeny-Kravchenko/Lease-and-loan-calculator/issues"
+  },
+  "homepage": "https://github.com/Evgeny-Kravchenko/Lease-and-loan-calculator#readme"
+}

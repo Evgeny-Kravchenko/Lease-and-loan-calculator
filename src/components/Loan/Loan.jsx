@@ -1,9 +1,10 @@
 import React from 'react';
-
-import './Loan.scss';
+import PropTypes from 'prop-types';
 
 import ItemOfCalculation from '../Item-of-calculation/Item-of-calculation.jsx';
 import ItemOfCalculationWithOptions from '../Item-of-calculation-with-options/Item-of-calculation-with-options.jsx';
+
+import './Loan.scss';
 
 export default function Loan(props) {
   const {
@@ -11,22 +12,7 @@ export default function Loan(props) {
     creditScore,
     onUpdateProperty,
     msrp,
-    tradeIn,
-    downPayment,
-    apr,
   } = props;
-
-  const term = terms.find((item) => item.active).value;
-  const creditScoreValue = creditScore.find((item) => item.active).factor;
-  const result = Loan.calculateLoan(
-    term,
-    creditScoreValue,
-    msrp,
-    tradeIn,
-    downPayment,
-    apr
-  );
-  console.log(result);
 
   return (
     <>
@@ -53,6 +39,8 @@ export default function Loan(props) {
       <ItemOfCalculation
         type="tel"
         name="Post code"
+        propertyName="postCode"
+        msrp={msrp}
         onUpdateProperty={onUpdateProperty}
       />
       <ItemOfCalculationWithOptions
@@ -65,19 +53,16 @@ export default function Loan(props) {
         type="number"
         name="Estimated APR"
         propertyName="apr"
+        msrp={msrp}
         onUpdateProperty={onUpdateProperty}
       />
     </>
   );
 }
 
-Loan.calculateLoan = function (
-  term,
-  creditScoreValue,
-  msrp,
-  tradeIn,
-  downPayment,
-  apr
-) {
-  return (msrp - tradeIn - downPayment) / (term * creditScoreValue * apr);
+Loan.propTypes = {
+  terms: PropTypes.arrayOf(PropTypes.object).isRequired,
+  creditScore: PropTypes.arrayOf(PropTypes.object).isRequired,
+  onUpdateProperty: PropTypes.func.isRequired,
+  msrp: PropTypes.number.isRequired
 };

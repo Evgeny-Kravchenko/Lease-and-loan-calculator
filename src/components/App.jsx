@@ -17,17 +17,37 @@ const termsMock = [
 ];
 
 const creditScoreMock = [
-  { value: 640, name: 'Poor', active: false, factor: 1.2 },
-  { value: 700, name: 'Fair', active: false, factor: 1.05 },
-  { value: 750, name: 'Good', active: false, factor: 1 },
-  { value: 800, name: 'Excellent', active: true, factor: 0.95 },
+  {
+    value: 640,
+    name: 'Poor',
+    active: false,
+    factor: 1.2,
+  },
+  {
+    value: 700,
+    name: 'Fair',
+    active: false,
+    factor: 1.05,
+  },
+  {
+    value: 750,
+    name: 'Good',
+    active: false,
+    factor: 1,
+  },
+  {
+    value: 800,
+    name: 'Excellent',
+    active: true,
+    factor: 0.95,
+  },
 ];
 
 class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      msrp: '',
+      msrp: 0,
       vehicleName: '',
       dealerName: '',
       dealerPhone: '',
@@ -39,6 +59,8 @@ class App extends Component {
       postCode: null,
       termsMock,
       creditScoreMock,
+      loan: 0,
+      lease: 0,
     };
     this.onChangeTab = this.onChangeTab.bind(this);
     this.onUpdateProperty = this.onUpdateProperty.bind(this);
@@ -54,8 +76,14 @@ class App extends Component {
           dealerPhone: resolve.dealerPhone,
           dealerRating: resolve.dealerRating,
         });
+        const loan = this.calculateLoan();
+        this.setState({ loan });
       }, 1000);
     });
+  }
+
+  componentDidUpdate() {
+
   }
 
   onChangeTab(tabClick) {
@@ -63,25 +91,55 @@ class App extends Component {
   }
 
   onUpdateProperty(propertyName, indexA, value) {
-    // eslint-disable-next-line react/destructuring-assignment
-    if (Array.isArray(this.state[propertyName])) {
-      this.setState({
-        // eslint-disable-next-line react/destructuring-assignment
-        [propertyName]: this.state[propertyName].map((item, indexB) => {
-          if (indexA === indexB) {
-            return { ...item, active: true };
-          }
-          return { ...item, active: false };
-        }),
-      });
-    } else {
-      this.setState({ [propertyName]: value });
-    }
+    const { [propertyName]: prop } = this.state;
+    const state = new Promise((resolve) => {
+      if (Array.isArray(prop)) {
+        this.setState((prevState) => ({
+          [propertyName]: prevState[propertyName].map((item, indexB) => {
+            if (indexA === indexB) {
+              return { ...item, active: true };
+            }
+            return { ...item, active: false };
+          }),
+        }));
+      } else {
+        this.setState({ [propertyName]: value });
+      }
+      resolve();
+    });
+    state.then(() => {
+      const loan = Math.round(this.calculateLoan());
+      this.setState({ loan });
+    });
+
+  }
+
+  calculateLoan() {
+    const {
+      msrp,
+      tradeIn,
+      downPayment,
+      apr,
+      termsMock: terms,
+      creditScoreMock: creditScore,
+    } = this.state;
+    const term = terms.find((item) => item.active).value;
+    const creditScoreValue = creditScore.find((item) => item.active).factor;
+    return ((msrp - tradeIn - downPayment) / term) * (creditScoreValue * apr);
   }
 
   render() {
-    const { isLease } = this.state;
-    const { msrp, tradeIn, downPayment, termsMock: terms, creditScoreMock: creditScore, apr } = this.state;
+    const {
+      isLease,
+      loan,
+      lease,
+      msrp,
+      tradeIn,
+      downPayment,
+      termsMock: terms,
+      creditScoreMock: creditScore,
+      apr,
+    } = this.state;
     const { onUpdateProperty } = this;
     const props = {
       terms,
@@ -100,11 +158,15 @@ class App extends Component {
             <Tab
               tabName="Lease"
               isLease={isLease}
+              loan={loan}
+              lease={lease}
               onChangeTab={this.onChangeTab}
             />
             <Tab
               tabName="Loan"
               isLease={isLease}
+              loan={loan}
+              lease={lease}
               onChangeTab={this.onChangeTab}
             />
           </div>

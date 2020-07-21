@@ -5,7 +5,7 @@ import './Tab.scss';
 
 export default function Tab(props) {
   let classes = ['tab'];
-  const { tabName, isLease } = props;
+  const { tabName, isLease, loan, lease } = props;
   if (tabName === 'Lease') {
     classes.push('tab__lease');
     if (isLease) {
@@ -19,12 +19,14 @@ export default function Tab(props) {
   }
   return (
     <button
+      type="button"
       onClick={() => {
         props.onChangeTab(tabName);
       }}
       className={classes.join(' ')}
     >
       {tabName}
+      {tabName === 'Loan' ? <div>{loan}</div> : <div>{lease}</div>}
     </button>
   );
 }
@@ -33,4 +35,6 @@ Tab.propTypes = {
   tabName: PropTypes.string.isRequired,
   isLease: PropTypes.bool.isRequired,
   onChangeTab: PropTypes.func.isRequired,
+  loan: PropTypes.number.isRequired,
+  lease: PropTypes.number.isRequired,
 };
