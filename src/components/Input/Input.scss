@@ -10,6 +10,9 @@
   width: 70px;
   height: 30px;
   border: 0;
+  font-family: 'Roboto Condensed', sans-serif;
+  font-weight: 900;
+  font-size: 1rem;
 }
 
 .sign {
@@ -22,14 +25,18 @@
 }
 
 .invalid-error {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   position: absolute;
-  left: -120px;
+  left: -150px;
   top: 0;
-  display: block;
-  width: 100px;
+  box-sizing: border-box;
+  width: 150px;
+  height: 32px;
   padding: 5px;
   background-color: lightgray;
-  margin-left: auto;
-  font-size: 10px;
+  font-family: 'Roboto Condensed', sans-serif;
+  font-size: 0.8rem;
   color: red;
 }

@@ -1,6 +1,7 @@
 .wrapper {
   display: flex;
   justify-content: space-between;
+  align-items: flex-start;
   flex-direction: row;
   flex-wrap: wrap;
   width: 700px;
@@ -11,6 +12,7 @@ h1 {
   color: #27aedb;
   text-align: center;
   width: 100%;
+  font-family: 'Noto Sans JP', sans-serif;
 }
 
 .calculator {
@@ -20,6 +22,9 @@ h1 {
   border: 1px solid #e6e6e6;
   border-radius: 10px;
   overflow: hidden;
+  font-family: 'Roboto Condensed', sans-serif;
+  color: #000000;
+  font-weight: 600;
 
   &__tabs {
     display: flex;

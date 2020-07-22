@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import './Tab.scss';
 
 export default function Tab(props) {
-  let classes = ['tab'];
+  let classes = ['tab', 'tab__title'];
   const { tabName, isLease, loan, lease } = props;
   if (tabName === 'Lease') {
     classes.push('tab__lease');
@@ -25,8 +25,12 @@ export default function Tab(props) {
       }}
       className={classes.join(' ')}
     >
-      {tabName}
-      {tabName === 'Loan' ? <div>{`$${loan}/mo`}</div> : <div>{lease}</div>}
+      {tabName}:
+      {tabName === 'Loan' ? (
+        <div className="tab__value">{`$${loan}/mo`}</div>
+      ) : (
+        <div className="tab__value">{`$${lease}/mo`}</div>
+      )}
     </button>
   );
 }

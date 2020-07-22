@@ -1,4 +1,7 @@
 .info-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   width: 35%;
   box-sizing: border-box;
   padding: 20px;
@@ -7,12 +10,31 @@
   background-color: #fafafa;
 
   &__item {
-    display: flex;
-    justify-content: space-between;
-    padding-bottom: 10px;
+    padding: 15px 0;
+    border-bottom: 2px solid #a9a9a9;
   }
 
-  &__vehicle-name, &__dealer-phone {
+  &__item,
+  &__vehicle-name,
+  &__dealer-url,
+  &__dealer-phone {
+    display: flex;
+    justify-content: space-between;
+    font-family: 'Roboto Condensed', sans-serif;
+  }
+
+  &__dealer-url,
+  &__dealer-phone {
+  }
+
+  &__item-title,
+  &__vehicle-name {
+    font-size: 1rem;
+    font-weight: 900;
+  }
+
+  &__vehicle-name,
+  &__dealer-phone {
     display: block;
   }
 }

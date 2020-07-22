@@ -15,7 +15,7 @@ export default function Loan(props) {
     downPayment,
     tradeIn,
     postCode,
-    apr
+    apr,
   } = props;
 
   return (

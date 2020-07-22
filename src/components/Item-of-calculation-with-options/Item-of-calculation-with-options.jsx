@@ -6,7 +6,7 @@ import './Item-of-calculation-with-options.scss';
 export default function ItemOfCalculationWithOptions(props) {
   const { name, items, propertyName, onUpdateProperty } = props;
   return (
-    <>
+    <div className="item-of-calculation-with-options">
       {name}
       <div className="wrapper-buttons">
         {items.map((item, index) => {
@@ -29,7 +29,7 @@ export default function ItemOfCalculationWithOptions(props) {
           );
         })}
       </div>
-    </>
+    </div>
   );
 }
 

@@ -12,7 +12,7 @@ export default function Input(props) {
   const { type, name, propertyName, onUpdateProperty, msrp, defaultValue } = props;
   const maxlength = Input.getMaxLength(name, msrp);
   const classes = Input.getClasses(name);
-  const [isValid, setIsValid] = useState(true);
+  const [isValid, setIsValid] = useState(Input.isValid(defaultValue, msrp, name));
 
   return (
     <div className="input-wrapper">

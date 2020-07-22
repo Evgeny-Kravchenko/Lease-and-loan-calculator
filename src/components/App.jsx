@@ -102,6 +102,7 @@ class App extends Component {
       mileagesMock,
       loan: 0,
       lease: 0,
+      isValid: true,
     };
     this.onChangeTab = this.onChangeTab.bind(this);
     this.onUpdateProperty = this.onUpdateProperty.bind(this);
@@ -118,8 +119,18 @@ class App extends Component {
           dealerRating: resolve.dealerRating,
           dealerURL: resolve.dealerURL,
         });
-        const loan = this.calculateLoan();
-        this.setState({ loan });
+        const isValidDataLoan = this.checkValidData('loan');
+        const isValidDataLease = this.checkValidData('lease');
+        let loan;
+        let lease;
+        if (isValidDataLoan) {
+          loan = Math.round(this.calculateLoan());
+          this.setState({ loan });
+        }
+        if (isValidDataLease) {
+          lease = Math.round(this.calculateLease());
+          this.setState({ lease });
+        }
       }, 1000);
     });
     const location = fetch('https://ipinfo.io/json?token=bbedd51dd11f32');
@@ -136,7 +147,7 @@ class App extends Component {
     this.setState({ isLease: tabClick === 'Lease' });
   }
 
-  onUpdateProperty(propertyName, indexA, value) {
+  onUpdateProperty(propertyName, indexA, value, isValid) {
     const { [propertyName]: prop } = this.state;
     const state = new Promise((resolve) => {
       if (Array.isArray(prop)) {
@@ -154,8 +165,18 @@ class App extends Component {
       resolve();
     });
     state.then(() => {
-      const loan = Math.round(this.calculateLoan());
-      this.setState({ loan });
+      const isValidDataLoan = this.checkValidData('loan');
+      const isValidDataLease = this.checkValidData('lease');
+      let loan;
+      let lease;
+      if (isValidDataLoan) {
+        loan = Math.round(this.calculateLoan());
+        this.setState({ loan });
+      }
+      if (isValidDataLease) {
+        lease = Math.round(this.calculateLease());
+        this.setState({ lease });
+      }
     });
   }
 
@@ -173,9 +194,40 @@ class App extends Component {
     return ((msrp - tradeIn - downPayment) / term) * (creditScoreValue * apr);
   }
 
+  calculateLease() {
+    const {
+      msrp,
+      tradeIn,
+      downPayment,
+      mileagesMock: mileages,
+      termsMockLease: terms,
+      creditScoreLeaseMock: creditScoreLease,
+    } = this.state;
+
+    const term = terms.find((item) => item.active).value;
+    const creditScoreValue = creditScoreLease.find((item) => item.active)
+      .factor;
+    const mileagesValue = mileages.find((item) => item.active).value;
+    return (
+      ((msrp - tradeIn - downPayment) * mileagesValue * creditScoreValue) /
+      (1000 * term)
+    );
+  }
+
+  checkValidData(typeCalculator) {
+    const { downPayment, tradeIn, apr, msrp } = this.state;
+    const isDownPaymentValid = downPayment <= msrp * 0.25;
+    const isTradeInValid = tradeIn <= msrp * 0.25;
+    const isAprValid = (apr >= 0 && apr <= 100);
+    return typeCalculator === 'lease'
+      ? isDownPaymentValid && isTradeInValid
+      : isDownPaymentValid && isTradeInValid && isAprValid;
+  }
+
   render() {
     const {
       vehicleName,
+      dealerName,
       dealerURL,
       dealerPhone,
       dealerRating,
@@ -191,10 +243,10 @@ class App extends Component {
       creditScoreLeaseMock: creditScoreLease,
       apr,
       postCode,
-      mileagesMock: mileages
+      mileagesMock: mileages,
     } = this.state;
 
-    const { onUpdateProperty } = this;
+    const { onUpdateProperty, switchError } = this;
     const propsLoan = {
       termsLoan,
       creditScoreLoan,
@@ -204,6 +256,7 @@ class App extends Component {
       apr,
       onUpdateProperty,
       postCode,
+      switchError,
     };
     const propsLease = {
       tradeIn,
@@ -213,7 +266,7 @@ class App extends Component {
       onUpdateProperty,
       termsLease,
       mileages,
-      creditScoreLease
+      creditScoreLease,
     };
     return (
       <div className="wrapper">
@@ -247,6 +300,8 @@ class App extends Component {
             dealerURL={dealerURL}
             dealerPhone={dealerPhone}
             dealerRating={dealerRating}
+            postCode={postCode}
+            dealerName={dealerName}
           />
         </div>
       </div>

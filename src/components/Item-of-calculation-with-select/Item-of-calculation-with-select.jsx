@@ -9,13 +9,18 @@ export default function ItemOfCalculationWithSelect(props) {
   return (
     <div className={classes.join(' ')}>
       {name}
-      <select value={activeValue} onChange={(event) => {
-        const { selectedIndex } = event.target;
-        onUpdateProperty(propertyName, selectedIndex);
-      }
-      }>
+      <select
+        className="select"
+        value={activeValue}
+        onChange={(event) => {
+          const { selectedIndex } = event.target;
+          onUpdateProperty(propertyName, selectedIndex);
+        }}
+      >
         {items.map((item, index) => (
-          <option key={index} value={item.value}>{item.value}</option>
+          <option key={index} value={item.value}>
+            {item.value}
+          </option>
         ))}
       </select>
     </div>
