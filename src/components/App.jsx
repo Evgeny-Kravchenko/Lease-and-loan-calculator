@@ -1,85 +1,21 @@
 import React, { Component } from 'react';
 
-import mockData from '../mock/mock-data.js';
+import {
+  mockDataResolve,
+  termsMockLoan,
+  termsMockLease,
+  creditScoreLoanMock,
+  creditScoreLeaseMock,
+  mileagesMock,
+} from '../mock/mock-data.js';
 
 import Tab from './Tab/Tab.jsx';
 import Loan from './Loan/Loan.jsx';
 import Lease from './Lease/Lease.jsx';
 import InfoCard from './InfoCard/InfoCard.jsx';
-import Spinner from './Spinner/Spinner';
+import Spinner from './Spinner/Spinner.jsx';
 
 import './App.scss';
-
-const termsMockLoan = [
-  { value: 12, active: false },
-  { value: 24, active: true },
-  { value: 36, active: false },
-  { value: 48, active: false },
-  { value: 72, active: false },
-  { value: 84, active: false },
-];
-
-const termsMockLease = [
-  { value: 24, active: false },
-  { value: 36, active: true },
-  { value: 48, active: false },
-];
-
-const creditScoreLoanMock = [
-  {
-    value: 640,
-    name: 'Poor',
-    active: false,
-    factor: 1.2,
-  },
-  {
-    value: 700,
-    name: 'Fair',
-    active: false,
-    factor: 1.05,
-  },
-  {
-    value: 750,
-    name: 'Good',
-    active: false,
-    factor: 1,
-  },
-  {
-    value: 800,
-    name: 'Excellent',
-    active: true,
-    factor: 0.95,
-  },
-];
-
-const creditScoreLeaseMock = [
-  {
-    value: 640,
-    active: false,
-    factor: 1.2,
-  },
-  {
-    value: 700,
-    active: false,
-    factor: 1.05,
-  },
-  {
-    value: 750,
-    active: false,
-    factor: 1,
-  },
-  {
-    value: 800,
-    active: true,
-    factor: 0.95,
-  },
-];
-
-const mileagesMock = [
-  { value: 10000, active: false },
-  { value: 12000, active: true },
-  { value: 15000, active: false },
-];
 
 class App extends Component {
   constructor(props) {
@@ -111,7 +47,7 @@ class App extends Component {
   }
 
   componentDidMount() {
-    mockData.then((resolve) => {
+    mockDataResolve.then((resolve) => {
       setTimeout(() => {
         this.setState({
           msrp: resolve.msrp,
@@ -121,28 +57,13 @@ class App extends Component {
           dealerRating: resolve.dealerRating,
           dealerURL: resolve.dealerURL,
         });
-        const isValidDataLoan = this.checkValidData('loan');
-        const isValidDataLease = this.checkValidData('lease');
-        let loan;
-        let lease;
-        if (isValidDataLoan) {
-          loan = Math.round(this.calculateLoan());
-          this.setState({ loan });
-        }
-        if (isValidDataLease) {
-          lease = Math.round(this.calculateLease());
-          this.setState({ lease });
-        }
-        this.setState((prevState) => {
-          return { isLoading: !prevState.isLoading };
-        });
+        this.updateCalculationLoanAndLease();
+        this.setState((prevState) => ({ isLoading: !prevState.isLoading }));
       }, 5000);
     });
     const location = fetch('https://ipinfo.io/json?token=bbedd51dd11f32');
     location
-      .then((data) => {
-        return data.json();
-      })
+      .then((data) => data.json())
       .then((data) => {
         this.setState({ postCode: Number(data.postal) });
       });
@@ -170,18 +91,7 @@ class App extends Component {
       resolve();
     });
     state.then(() => {
-      const isValidDataLoan = this.checkValidData('loan');
-      const isValidDataLease = this.checkValidData('lease');
-      let loan;
-      let lease;
-      if (isValidDataLoan) {
-        loan = Math.round(this.calculateLoan());
-        this.setState({ loan });
-      }
-      if (isValidDataLease) {
-        lease = Math.round(this.calculateLease());
-        this.setState({ lease });
-      }
+      this.updateCalculationLoanAndLease();
     });
   }
 
@@ -214,19 +124,38 @@ class App extends Component {
       .factor;
     const mileagesValue = mileages.find((item) => item.active).value;
     return (
-      ((msrp - tradeIn - downPayment) * mileagesValue * creditScoreValue) /
-      (1000 * term)
+      ((msrp - tradeIn - downPayment) * mileagesValue * creditScoreValue) / (1000 * term)
     );
   }
 
   checkValidData(typeCalculator) {
-    const { downPayment, tradeIn, apr, msrp } = this.state;
+    const {
+      downPayment,
+      tradeIn,
+      apr,
+      msrp,
+    } = this.state;
     const isDownPaymentValid = downPayment <= msrp * 0.25;
     const isTradeInValid = tradeIn <= msrp * 0.25;
     const isAprValid = apr >= 0 && apr <= 100;
     return typeCalculator === 'lease'
       ? isDownPaymentValid && isTradeInValid
       : isDownPaymentValid && isTradeInValid && isAprValid;
+  }
+
+  updateCalculationLoanAndLease() {
+    const isValidDataLoan = this.checkValidData('loan');
+    const isValidDataLease = this.checkValidData('lease');
+    let loan;
+    let lease;
+    if (isValidDataLoan) {
+      loan = Math.round(this.calculateLoan());
+      this.setState({ loan });
+    }
+    if (isValidDataLease) {
+      lease = Math.round(this.calculateLease());
+      this.setState({ lease });
+    }
   }
 
   render() {
@@ -249,9 +178,11 @@ class App extends Component {
       apr,
       postCode,
       mileagesMock: mileages,
+      isLoading,
     } = this.state;
 
-    const { onUpdateProperty, switchError } = this;
+    const { onUpdateProperty, switchError, onChangeTab } = this;
+
     const propsLoan = {
       termsLoan,
       creditScoreLoan,
@@ -263,6 +194,7 @@ class App extends Component {
       postCode,
       switchError,
     };
+
     const propsLease = {
       tradeIn,
       downPayment,
@@ -273,29 +205,27 @@ class App extends Component {
       mileages,
       creditScoreLease,
     };
+
+    const propsTab = {
+      isLease,
+      loan,
+      lease,
+      onChangeTab,
+    };
     return (
       <div className="wrapper">
         <h1>Lease and loan calculator</h1>
-        {!this.state.isLoading ? (
+        {!isLoading ? (
           <>
             <div className="calculator">
               <div className="calculator__tabs">
-                <Tab
-                  tabName="Lease"
-                  isLease={isLease}
-                  loan={loan}
-                  lease={lease}
-                  onChangeTab={this.onChangeTab}
-                />
-                <Tab
-                  tabName="Loan"
-                  isLease={isLease}
-                  loan={loan}
-                  lease={lease}
-                  onChangeTab={this.onChangeTab}
-                />
+                {/* eslint-disable-next-line react/jsx-props-no-spreading */}
+                <Tab tabName="Lease" {...propsTab} />
+                {/* eslint-disable-next-line react/jsx-props-no-spreading */}
+                <Tab tabName="Loan" {...propsTab} />
               </div>
               <div className="calculator__input-data">
+                {/* eslint-disable-next-line react/jsx-props-no-spreading */}
                 {isLease ? <Lease {...propsLease} /> : <Loan {...propsLoan} />}
               </div>
             </div>
