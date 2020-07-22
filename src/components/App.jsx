@@ -4,10 +4,12 @@ import mockData from '../mock/mock-data.js';
 
 import Tab from './Tab/Tab.jsx';
 import Loan from './Loan/Loan.jsx';
+import Lease from './Lease/Lease.jsx';
+import InfoCard from './InfoCard/InfoCard.jsx';
 
 import './App.scss';
 
-const termsMock = [
+const termsMockLoan = [
   { value: 12, active: false },
   { value: 24, active: true },
   { value: 36, active: false },
@@ -16,7 +18,13 @@ const termsMock = [
   { value: 84, active: false },
 ];
 
-const creditScoreMock = [
+const termsMockLease = [
+  { value: 24, active: false },
+  { value: 36, active: true },
+  { value: 48, active: false },
+];
+
+const creditScoreLoanMock = [
   {
     value: 640,
     name: 'Poor',
@@ -43,6 +51,35 @@ const creditScoreMock = [
   },
 ];
 
+const creditScoreLeaseMock = [
+  {
+    value: 640,
+    active: false,
+    factor: 1.2,
+  },
+  {
+    value: 700,
+    active: false,
+    factor: 1.05,
+  },
+  {
+    value: 750,
+    active: false,
+    factor: 1,
+  },
+  {
+    value: 800,
+    active: true,
+    factor: 0.95,
+  },
+];
+
+const mileagesMock = [
+  { value: 10000, active: false },
+  { value: 12000, active: true },
+  { value: 15000, active: false },
+];
+
 class App extends Component {
   constructor(props) {
     super(props);
@@ -52,13 +89,17 @@ class App extends Component {
       dealerName: '',
       dealerPhone: '',
       dealerRating: '',
+      dealerURL: '',
       isLease: true,
       downPayment: 0,
       tradeIn: 0,
       apr: 0,
-      postCode: null,
-      termsMock,
-      creditScoreMock,
+      postCode: 0,
+      termsMockLoan,
+      termsMockLease,
+      creditScoreLoanMock,
+      creditScoreLeaseMock,
+      mileagesMock,
       loan: 0,
       lease: 0,
     };
@@ -75,15 +116,20 @@ class App extends Component {
           dealerName: resolve.dealerName,
           dealerPhone: resolve.dealerPhone,
           dealerRating: resolve.dealerRating,
+          dealerURL: resolve.dealerURL,
         });
         const loan = this.calculateLoan();
         this.setState({ loan });
       }, 1000);
     });
-  }
-
-  componentDidUpdate() {
-
+    const location = fetch('https://ipinfo.io/json?token=bbedd51dd11f32');
+    location
+      .then((data) => {
+        return data.json();
+      })
+      .then((data) => {
+        this.setState({ postCode: Number(data.postal) });
+      });
   }
 
   onChangeTab(tabClick) {
@@ -111,7 +157,6 @@ class App extends Component {
       const loan = Math.round(this.calculateLoan());
       this.setState({ loan });
     });
-
   }
 
   calculateLoan() {
@@ -120,35 +165,55 @@ class App extends Component {
       tradeIn,
       downPayment,
       apr,
-      termsMock: terms,
-      creditScoreMock: creditScore,
+      termsMockLoan: terms,
+      creditScoreLoanMock: creditScoreLoan,
     } = this.state;
     const term = terms.find((item) => item.active).value;
-    const creditScoreValue = creditScore.find((item) => item.active).factor;
+    const creditScoreValue = creditScoreLoan.find((item) => item.active).factor;
     return ((msrp - tradeIn - downPayment) / term) * (creditScoreValue * apr);
   }
 
   render() {
     const {
+      vehicleName,
+      dealerURL,
+      dealerPhone,
+      dealerRating,
       isLease,
       loan,
       lease,
       msrp,
       tradeIn,
       downPayment,
-      termsMock: terms,
-      creditScoreMock: creditScore,
+      termsMockLoan: termsLoan,
+      termsMockLease: termsLease,
+      creditScoreLoanMock: creditScoreLoan,
+      creditScoreLeaseMock: creditScoreLease,
       apr,
+      postCode,
+      mileagesMock: mileages
     } = this.state;
+
     const { onUpdateProperty } = this;
-    const props = {
-      terms,
-      creditScore,
+    const propsLoan = {
+      termsLoan,
+      creditScoreLoan,
       msrp,
       tradeIn,
       downPayment,
       apr,
       onUpdateProperty,
+      postCode,
+    };
+    const propsLease = {
+      tradeIn,
+      downPayment,
+      postCode,
+      msrp,
+      onUpdateProperty,
+      termsLease,
+      mileages,
+      creditScoreLease
     };
     return (
       <div className="wrapper">
@@ -171,8 +236,18 @@ class App extends Component {
             />
           </div>
           <div className="calculator__input-data">
-            {isLease ? <p>It is lease</p> : <Loan {...props} />}
+            {isLease ? <Lease {...propsLease} /> : <Loan {...propsLoan} />}
           </div>
+        </div>
+        <div className="info-card">
+          <InfoCard
+            msrp={msrp}
+            loan={loan}
+            vehicleName={vehicleName}
+            dealerURL={dealerURL}
+            dealerPhone={dealerPhone}
+            dealerRating={dealerRating}
+          />
         </div>
       </div>
     );

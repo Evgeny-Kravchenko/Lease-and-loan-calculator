@@ -9,10 +9,11 @@ const ESTIMATED_APR = 'Estimated APR';
 const POST_CODE = 'Post code';
 
 export default function Input(props) {
-  const { type, name, propertyName, onUpdateProperty, msrp } = props;
+  const { type, name, propertyName, onUpdateProperty, msrp, defaultValue } = props;
   const maxlength = Input.getMaxLength(name, msrp);
   const classes = Input.getClasses(name);
   const [isValid, setIsValid] = useState(true);
+
   return (
     <div className="input-wrapper">
       {(name === DOWN_PAYMENT || name === TRADE_IN_VALUE) && (
@@ -20,6 +21,7 @@ export default function Input(props) {
       )}
       {name === POST_CODE && <span className="sign">〒</span>}
       <input
+        value={defaultValue}
         type={type}
         min="0"
         max={maxlength}
@@ -27,7 +29,7 @@ export default function Input(props) {
         onChange={(event) => {
           setIsValid(Input.isValid(event.target.value, msrp, name));
           if (isValid) {
-            onUpdateProperty(propertyName, false, event.target.value);
+            onUpdateProperty(propertyName, false, Number(event.target.value));
           }
         }}
       />
@@ -45,6 +47,7 @@ Input.propTypes = {
   propertyName: PropTypes.string.isRequired,
   onUpdateProperty: PropTypes.func.isRequired,
   msrp: PropTypes.number.isRequired,
+  defaultValue: PropTypes.number
 };
 
 Input.isValid = (value, msrp, name) => {

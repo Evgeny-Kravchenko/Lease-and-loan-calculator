@@ -1,0 +1,18 @@
+.info-card {
+  width: 35%;
+  box-sizing: border-box;
+  padding: 20px;
+  border-radius: 10px;
+  border: 1px solid #e6e6e6;
+  background-color: #fafafa;
+
+  &__item {
+    display: flex;
+    justify-content: space-between;
+    padding-bottom: 10px;
+  }
+
+  &__vehicle-name, &__dealer-phone {
+    display: block;
+  }
+}

@@ -8,18 +8,22 @@ import './Loan.scss';
 
 export default function Loan(props) {
   const {
-    terms,
-    creditScore,
+    termsLoan,
+    creditScoreLoan,
     onUpdateProperty,
     msrp,
+    downPayment,
+    tradeIn,
+    postCode,
+    apr
   } = props;
 
   return (
     <>
       <ItemOfCalculationWithOptions
         name="Terms (months)"
-        items={terms}
-        propertyName="termsMock"
+        items={termsLoan}
+        propertyName="termsMockLoan"
         onUpdateProperty={onUpdateProperty}
       />
       <ItemOfCalculation
@@ -28,6 +32,7 @@ export default function Loan(props) {
         propertyName="downPayment"
         msrp={msrp}
         onUpdateProperty={onUpdateProperty}
+        defaultValue={downPayment}
       />
       <ItemOfCalculation
         type="number"
@@ -35,6 +40,7 @@ export default function Loan(props) {
         propertyName="tradeIn"
         msrp={msrp}
         onUpdateProperty={onUpdateProperty}
+        defaultValue={tradeIn}
       />
       <ItemOfCalculation
         type="tel"
@@ -42,11 +48,12 @@ export default function Loan(props) {
         propertyName="postCode"
         msrp={msrp}
         onUpdateProperty={onUpdateProperty}
+        defaultValue={postCode}
       />
       <ItemOfCalculationWithOptions
-        propertyName="creditScoreMock"
+        propertyName="creditScoreLoanMock"
         name="Approx. Credit Score"
-        items={creditScore}
+        items={creditScoreLoan}
         onUpdateProperty={onUpdateProperty}
       />
       <ItemOfCalculation
@@ -55,14 +62,19 @@ export default function Loan(props) {
         propertyName="apr"
         msrp={msrp}
         onUpdateProperty={onUpdateProperty}
+        defaultValue={apr}
       />
     </>
   );
 }
 
 Loan.propTypes = {
-  terms: PropTypes.arrayOf(PropTypes.object).isRequired,
-  creditScore: PropTypes.arrayOf(PropTypes.object).isRequired,
+  termsLoan: PropTypes.arrayOf(PropTypes.object).isRequired,
+  creditScoreLoan: PropTypes.arrayOf(PropTypes.object).isRequired,
   onUpdateProperty: PropTypes.func.isRequired,
-  msrp: PropTypes.number.isRequired
+  msrp: PropTypes.number.isRequired,
+  downPayment: PropTypes.number.isRequired,
+  tradeIn: PropTypes.number.isRequired,
+  postCode: PropTypes.number.isRequired,
+  apr: PropTypes.number.isRequired,
 };

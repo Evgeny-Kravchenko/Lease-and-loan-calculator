@@ -7,7 +7,7 @@ import './Item-of-calculation.scss';
 
 export default function ItemOfCalculation(props) {
   const classes = ['item-of-calculation'];
-  const { name, type, propertyName, onUpdateProperty, msrp } = props;
+  const { name, type, propertyName, onUpdateProperty, msrp, defaultValue } = props;
   return (
     <div className={classes.join(' ')}>
       {name}
@@ -17,6 +17,7 @@ export default function ItemOfCalculation(props) {
         propertyName={propertyName}
         msrp={msrp}
         onUpdateProperty={onUpdateProperty}
+        defaultValue={defaultValue}
       />
     </div>
   );
@@ -28,4 +29,5 @@ ItemOfCalculation.propTypes = {
   propertyName: PropTypes.string.isRequired,
   onUpdateProperty: PropTypes.func.isRequired,
   msrp: PropTypes.number.isRequired,
+  defaultValue: PropTypes.number
 };

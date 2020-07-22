@@ -26,7 +26,7 @@ export default function Tab(props) {
       className={classes.join(' ')}
     >
       {tabName}
-      {tabName === 'Loan' ? <div>{loan}</div> : <div>{lease}</div>}
+      {tabName === 'Loan' ? <div>{`$${loan}/mo`}</div> : <div>{lease}</div>}
     </button>
   );
 }
