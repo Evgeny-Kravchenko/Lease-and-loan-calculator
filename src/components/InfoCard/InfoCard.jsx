@@ -41,7 +41,7 @@ export default function InfoCard(props) {
       </div>
       <div className="info-card__item">
         <span className="info-card__item-title">Dealer url</span>
-        <a className="info-card__dealer-url" href={dealerURL}>
+        <a target='_blank' className="info-card__dealer-url" href={dealerURL}>
           {dealerURL}
         </a>
       </div>
@@ -63,7 +63,7 @@ export default function InfoCard(props) {
       </div>
       <div className="info-card__item">
         <span className="info-card__item-title">Taxes</span>
-        <span className="info-card__item-value">{taxes}</span>
+        <span className="info-card__item-value">{`${taxes}$`}</span>
       </div>
     </>
   );

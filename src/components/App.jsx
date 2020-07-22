@@ -6,6 +6,7 @@ import Tab from './Tab/Tab.jsx';
 import Loan from './Loan/Loan.jsx';
 import Lease from './Lease/Lease.jsx';
 import InfoCard from './InfoCard/InfoCard.jsx';
+import Spinner from './Spinner/Spinner';
 
 import './App.scss';
 
@@ -103,6 +104,7 @@ class App extends Component {
       loan: 0,
       lease: 0,
       isValid: true,
+      isLoading: true,
     };
     this.onChangeTab = this.onChangeTab.bind(this);
     this.onUpdateProperty = this.onUpdateProperty.bind(this);
@@ -131,7 +133,10 @@ class App extends Component {
           lease = Math.round(this.calculateLease());
           this.setState({ lease });
         }
-      }, 1000);
+        this.setState((prevState) => {
+          return { isLoading: !prevState.isLoading };
+        });
+      }, 5000);
     });
     const location = fetch('https://ipinfo.io/json?token=bbedd51dd11f32');
     location
@@ -147,7 +152,7 @@ class App extends Component {
     this.setState({ isLease: tabClick === 'Lease' });
   }
 
-  onUpdateProperty(propertyName, indexA, value, isValid) {
+  onUpdateProperty(propertyName, indexA, value) {
     const { [propertyName]: prop } = this.state;
     const state = new Promise((resolve) => {
       if (Array.isArray(prop)) {
@@ -218,7 +223,7 @@ class App extends Component {
     const { downPayment, tradeIn, apr, msrp } = this.state;
     const isDownPaymentValid = downPayment <= msrp * 0.25;
     const isTradeInValid = tradeIn <= msrp * 0.25;
-    const isAprValid = (apr >= 0 && apr <= 100);
+    const isAprValid = apr >= 0 && apr <= 100;
     return typeCalculator === 'lease'
       ? isDownPaymentValid && isTradeInValid
       : isDownPaymentValid && isTradeInValid && isAprValid;
@@ -271,39 +276,45 @@ class App extends Component {
     return (
       <div className="wrapper">
         <h1>Lease and loan calculator</h1>
-        <div className="calculator">
-          <div className="calculator__tabs">
-            <Tab
-              tabName="Lease"
-              isLease={isLease}
-              loan={loan}
-              lease={lease}
-              onChangeTab={this.onChangeTab}
-            />
-            <Tab
-              tabName="Loan"
-              isLease={isLease}
-              loan={loan}
-              lease={lease}
-              onChangeTab={this.onChangeTab}
-            />
-          </div>
-          <div className="calculator__input-data">
-            {isLease ? <Lease {...propsLease} /> : <Loan {...propsLoan} />}
-          </div>
-        </div>
-        <div className="info-card">
-          <InfoCard
-            msrp={msrp}
-            loan={loan}
-            vehicleName={vehicleName}
-            dealerURL={dealerURL}
-            dealerPhone={dealerPhone}
-            dealerRating={dealerRating}
-            postCode={postCode}
-            dealerName={dealerName}
-          />
-        </div>
+        {!this.state.isLoading ? (
+          <>
+            <div className="calculator">
+              <div className="calculator__tabs">
+                <Tab
+                  tabName="Lease"
+                  isLease={isLease}
+                  loan={loan}
+                  lease={lease}
+                  onChangeTab={this.onChangeTab}
+                />
+                <Tab
+                  tabName="Loan"
+                  isLease={isLease}
+                  loan={loan}
+                  lease={lease}
+                  onChangeTab={this.onChangeTab}
+                />
+              </div>
+              <div className="calculator__input-data">
+                {isLease ? <Lease {...propsLease} /> : <Loan {...propsLoan} />}
+              </div>
+            </div>
+            <div className="info-card">
+              <InfoCard
+                msrp={msrp}
+                loan={loan}
+                vehicleName={vehicleName}
+                dealerURL={dealerURL}
+                dealerPhone={dealerPhone}
+                dealerRating={dealerRating}
+                postCode={postCode}
+                dealerName={dealerName}
+              />
+            </div>
+          </>
+        ) : (
+          <Spinner />
+        )}
       </div>
     );
   }

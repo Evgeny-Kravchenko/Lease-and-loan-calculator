@@ -1,0 +1,28 @@
+@keyframes rotate-center {
+  0% {
+    transform: rotate(0);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 500px;
+}
+
+.spinner-circle {
+  width: 50px;
+  height: 50px;
+  box-sizing: border-box;
+  border-radius: 50%;
+  border: 5px dotted #27aedb;
+  border-left: 0;
+  border-right: 5px solid #27aedb;
+  animation: rotate-center 1s linear infinite both;
+}
